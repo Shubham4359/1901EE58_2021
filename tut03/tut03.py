@@ -1,6 +1,6 @@
 import os.path
 
-def output_by_subject(tittle, heading_coloumns):
+def output_by_subject(tittle, heading_coloumn):
     path=r"C:\Users\DELL\Desktop\tut03solution\output_by_subject\\"        #setting the path
     topic=tittle[3]                    #  storing the topic of the file
     new_heading=heading_coloumn[0]+','+heading_coloumn[1]+','+heading_coloumn[3]+','+heading_coloumn[8]     #creating heading row to be pushed onto an empty file
@@ -14,7 +14,7 @@ def output_by_subject(tittle, heading_coloumns):
             f.write(content_new_row)                                #insert new row    
     return
 
-def output_individual_roll(tittle, heading_coloumns):
+def output_individual_roll(tittle, heading_coloumn):
     path=r"C:\Users\DELL\Desktop\tut03solution\output_individual_roll\\"                      #setting path
     topic=tittle[0]                    #  storing the name of the file
     new_heading=heading_coloumn[0]+','+heading_coloumn[1]+','+heading_coloumn[3]+','+heading_coloumn[8]     #creating heading row to be pushed onto an empty file
