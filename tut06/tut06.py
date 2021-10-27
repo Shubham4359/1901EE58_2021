@@ -1,60 +1,65 @@
-import os
 import re
+import os
+import shutil 
 
-movie_re = r"(?P<movie>[\w\s]+\-?\s)"
 
-se_re1 = r"s(?P<season>\d+)e(?P<episode>\d+)\s"
-se_re2 = r"(?P<season>\d+)x(?P<episode>\d+)\s\-\s"
 
-title_re = r"(?P<title>[\w\s']+)"
-extension_re = r"(?P<extension>\.(mp4|srt))"
 
-body_re1 = fr".+\.{title_re}{extension_re}"
-body_re2 = fr"{title_re}.+{extension_re}"
 
+os.system('cls')
 
 def regex_renamer():
-
-    # Taking input from the user
-
-    choices = ["Breaking Bad", "Game of Thrones", "Lucifer"]
-
-    for idx, choice in enumerate(choices):
-        print(f"{idx + 1}. {choice}")
+   
+    print("1. Breaking Bad")
+    print("2. Game of Thrones")
+    print("3. Lucifer")
 
     webseries_num = int(input("Enter the number of the web series that you wish to rename. 1/2/3: "))
-    season_padding = int(input("Enter the Season Number Padding: "))
-    episode_padding = int(input("Enter the Episode Number Padding: "))
-
-    regex = None
-    if webseries_num == 1:
-        regex = fr"{movie_re}{se_re1}{body_re1}"
-    elif webseries_num == 2 or webseries_num == 3:
-        regex = fr"{movie_re}{se_re2}{body_re2}"
+    s_padding = int(input("Enter the Season Number Padding: "))
+    e_padding = int(input("Enter the Episode Number Padding: "))
+    name_of_series = ""
+    if webseries_num==1:
+        name_of_series = "Breaking Bad"
+    elif webseries_num ==2:
+        name_of_series="Game of Thrones"
     else:
-        raise ValueError("webseries_num must be within 1-3")
+        name_of_series ="Lucifer"
+       
+    if name_of_series=='Breaking Bad':
+        files_series= os.listdir(os.getcwd()+"\\wrong_srt\\"+name_of_series)
+        for series in files_series:
+            series_sub= re.split(' ',series)
+            info_series=re.split('[se]',series_sub[2])
+            newpath=os.getcwd()
+            shutil.copyfile(os.getcwd()+"\\wrong_srt\\"+name_of_series+"\\"+series,newpath+"\\corrected_srt\\Breaking Bad\\Breaking Bad - Season "+str('{:' + '0' + '>' + str(s_padding) + '}').format(info_series[1])+" Episode "+str('{:' + '0' + '>' + str(e_padding) + '}').format(info_series[2])+"."+re.split('\.',series_sub[3])[3]) 
+    
+    elif name_of_series=='Game of Thrones':
+        files_series= os.listdir(os.getcwd()+"\\wrong_srt\\"+name_of_series)
+        for series in files_series:
+            series_main= re.split('.WEB',series)
+            series_sub=re.split("-",series_main[0])
+            info_series=re.split('[x]',series_sub[1])
+            newpath=os.getcwd()
+            shutil.copyfile(os.getcwd()+"\\wrong_srt\\"+name_of_series+"\\"+series,newpath+"\\corrected_srt\\Game of Thrones\\Game of Thrones - Season "+str('{:' + '0' + '>' + str(s_padding) + '}').format(info_series[0].strip())+" Episode "+str('{:' + '0' + '>' + str(e_padding) + '}').format(info_series[1])+"-"+series_sub[2]+"."+re.split('\.',series_main[1])[4])          
+    
+    elif name_of_series=='Lucifer':
+        files_series= os.listdir(os.getcwd()+"\\wrong_srt\\"+name_of_series)
+        for series in files_series:
+            series_main= re.split('.HDTV',series)
+            series_sub=re.split("-",series_main[0])
+            info_series=re.split('[x]',series_sub[1])
+            newpath=os.getcwd()+"\\corrected_srt\\Lucifer\\Lucifer - Season "
+            shutil.copyfile(os.getcwd()+"\\wrong_srt\\"+name_of_series+"\\"+series,newpath+str('{:' + '0' + '>' + str(s_padding) + '}').format(info_series[0].strip())+" Episode "+str('{:' + '0' + '>' + str(e_padding) + '}').format(info_series[1])+"-"+series_sub[2]+"."+re.split('\.',series_main[1])[3])          
 
-    relative_path = "srt"
-    path = os.path.join(relative_path, choices[webseries_num - 1])
+if os.path.isdir("corrected_srt") == 0:
+    os.mkdir("corrected_srt")
+if os.path.isdir("corrected_srt\Breaking Bad") == 0:
+	os.mkdir("corrected_srt\Breaking Bad")	    
+if os.path.isdir("corrected_srt\Game of Thrones") == 0:
+    os.mkdir("corrected_srt\Game of Thrones")
+if os.path.isdir("corrected_srt\Lucifer") == 0:
+	os.mkdir("corrected_srt\Lucifer")
 
-    pattern = re.compile(regex)
-
-    files = os.listdir(path)
-
-    def get_number(num, pad_by):
-        num = str(int(num))
-        while len(num) < pad_by:
-            num = "0" + num
-        return num
-
-    for file in files:
-        print(file)
-        m = pattern.search(file)
-        season = get_number(m.group("season"), season_padding)
-        episode = get_number(m.group("episode"), episode_padding)
-        hyphen = "- " if webseries_num != 1 else ""
-        new_file_name = f"{m.group('movie')}Season {season} Episode {episode} {hyphen}{m.group('title')}{m.group('extension')}"
-        os.rename(os.path.join(path, file), os.path.join(path, new_file_name))
-
+            
 
 regex_renamer()
