@@ -1,4 +1,3 @@
-def generate_transcript():
-    return
+# Execute the compute.py file
 
 
